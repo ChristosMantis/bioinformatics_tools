@@ -73,12 +73,12 @@ for(i=0; i<seq1_length; i++)
                 {
                 temp_max_val = scoring_matrix[i][j+1];
                 }
-            scoring_matrix[i+1][j+1] = temp_max_val+1;
+            scoring_matrix[i+1][j+1] = temp_max_val;
             }
         }
     }
 
-/*
+
 for(i=0; i<seq2_length; i++)
     {
     for(j=0; j<seq1_length; j++)
@@ -87,7 +87,7 @@ for(i=0; i<seq2_length; i++)
         }
     printf("\n");
     }
-*/
+
 
 //Trackack algorithm 
 
@@ -96,30 +96,35 @@ int trackback;
 i = seq1_length-1;
 j = seq2_length-1;
 char output_matrix[seq1_length*seq2_length][2];
+temp_max_val = scoring_matrix[i+1][j+1];
 
-while( i != 0 && j != 0 )   
+while( (i > 0 && j > 0) )   
     {
-    temp_max_val = scoring_matrix[i+1][j];
-    trackback = 0;
-    output_matrix[step_num][0] = '-';
-    output_matrix[step_num][1] = seq2[j];
+//printf("i = %d\tj = %d\n", i, j );
+    if(scoring_matrix[i+1][j] >= temp_max_val)
+        {
+        temp_max_val = scoring_matrix[i+1][j];
+        trackback = 0;
+        output_matrix[step_num][0] = '-';
+        output_matrix[step_num][1] = seq2[j-1];
+        }
 
-    if(scoring_matrix[i][j] > temp_max_val)
+    else if(scoring_matrix[i][j] >= temp_max_val)
         {
         temp_max_val = scoring_matrix[i][j];
         trackback = 1;
-        output_matrix[step_num][0] = seq1[i];
-        output_matrix[step_num][1] = seq2[j];
+        output_matrix[step_num][0] = seq1[i-1];
+        output_matrix[step_num][1] = seq2[j-1];
         }
 
-    else if(scoring_matrix[i][j+1] > temp_max_val);
+    else if(scoring_matrix[i][j+1] > temp_max_val)
         {
         temp_max_val = scoring_matrix[i][j+1];
         trackback = 2;
-        output_matrix[step_num][0] = seq1[i];
+        output_matrix[step_num][0] = seq1[i-1];
         output_matrix[step_num][1] = '-';
         }
-
+//printf("%d\n", trackback);
     if(trackback == 0)
         {
         j--;
