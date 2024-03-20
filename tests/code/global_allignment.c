@@ -40,7 +40,7 @@ for(i=1; i<=seq2_length; i++)
     }
 
 //Calculate the scores
-
+/*
 for(i=0; i<seq1_length; i++)
     {
     for(j=0; j<seq2_length; j++)
@@ -77,7 +77,49 @@ for(i=0; i<seq1_length; i++)
             }
         }
     }
+*/
+for(i=0; i<seq1_length; i++)
+    {
+    for(j=0; j<seq2_length; j++)
+        {
+        if(seq1[i] == seq2[j])
+            {
+            temp_max_val = scoring_matrix[i+1][j];
 
+            if(scoring_matrix[i][j] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i][j];
+                }
+            
+            if(scoring_matrix[i][j+1] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i][j+1];
+                }
+            scoring_matrix[i+1][j+1] = temp_max_val+1;
+            
+            for(k = j; k < seq2_length; k++)
+                {
+                scoring_matrix[i+1][k+1] = temp_max_val+1;
+                }
+            j = seq2_length;
+            }
+        else
+            {   
+            temp_max_val = scoring_matrix[i+1][j];
+
+            if(scoring_matrix[i][j] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i][j];
+                }
+            
+            else if(scoring_matrix[i][j+1] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i][j+1];
+                }
+            scoring_matrix[i+1][j+1] = temp_max_val;
+            }
+        }
+    }
 
 for(i=0; i<seq2_length; i++)
     {
