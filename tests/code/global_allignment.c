@@ -194,14 +194,55 @@ for(i=0; i<seq2_length; i++)
 
 //Trackack algorithm
 
-int trackback = 1;
+int trackback;
 
 i = seq1_length-1;
 j = seq2_length-1;
 
 char output_matrix[seq1_length*seq2_length][2];
 
+while( i+j>2)  
+    {
+printf("i = %d\tj = %d\n\n", i, j );  
+    if(scoring_matrix[i][j] >= scoring_matrix[i][j+1] && scoring_matrix[i][j] >= scoring_matrix[i+1][j])
+        {
+        trackback = 1;
+        output_matrix[step_num+1][0] = seq1[i];
+        output_matrix[step_num+1][1] = seq2[j];
+        }
+    
+    else if(scoring_matrix[i+1][j] >= scoring_matrix[i][j] && scoring_matrix[i+1][j] >= scoring_matrix[i][j+1])
+        {
+        trackback = 0;
+        output_matrix[step_num+1][0] = '-';
+        output_matrix[step_num+1][1] = seq2[j];
+        }
 
+    else if(scoring_matrix[i][j+1] >= scoring_matrix[i][j] && scoring_matrix[i][j] >= scoring_matrix[i+1][j])
+        {
+        trackback = 2;
+        output_matrix[step_num+1][0] = seq1[i];
+        output_matrix[step_num+1][1] = '-';
+        }
+printf("max value = %d\n", temp_max_val);
+printf("trackback = %d\n\n", trackback);
+    if(trackback == 0)
+        {
+        j--;
+        }
+    else if(trackback == 1)
+        {
+        i--;
+        j--;
+        }   
+    else if(trackback == 2)
+        {
+        i--;
+        } 
+    
+    step_num++;
+    }
+/*
 while( i+j>0 )   
     {
 printf("i = %d\tj = %d\n\n", i, j );
@@ -248,7 +289,7 @@ printf("trackback = %d\n\n", trackback);
     
     step_num++;
     }
-
+*/
 //Print output
 
 printf("\n\n");
