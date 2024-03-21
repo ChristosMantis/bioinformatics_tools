@@ -29,12 +29,12 @@ for(i=0; i<=seq1_length; i++)
 
 //Add values for the first row and collumn
 
-for(i=0; i<=seq1_length; i++)
+for(i=0; i<=seq2_length; i++)
     {
     scoring_matrix[0][i] = 0;
     }
 
-for(i=1; i<=seq2_length; i++)
+for(i=1; i<=seq1_length; i++)
     {
     scoring_matrix[i][0] = 0;
     }
@@ -181,10 +181,14 @@ for(i=0; i<seq1_length; i++)
     }
 */
 
-
-for(i=0; i<seq2_length; i++)
+for(i=0; i<seq1_length; i++)
     {
-    for(j=0; j<seq1_length; j++)
+    printf(" %c", seq1[i]);
+    }
+for(i=0; i<=seq2_length; i++)
+    {
+    
+    for(j=0; j<=seq1_length; j++)
         {
         printf("%d ", scoring_matrix[j][i]);
         }
@@ -201,7 +205,7 @@ j = seq2_length-1;
 
 char output_matrix[seq1_length*seq2_length][2];
 
-while( i+j>2)  
+while( i+j>1)  
     {
 printf("i = %d\tj = %d\n\n", i, j );  
     if(scoring_matrix[i][j] >= scoring_matrix[i][j+1] && scoring_matrix[i][j] >= scoring_matrix[i+1][j])
