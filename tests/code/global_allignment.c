@@ -43,10 +43,10 @@ for(i=1; i<=seq1_length; i++)
 
 for(i=0; i<seq1_length; i++)
     {
-//y axis fill
+//y axis scoring matrix fill
     for(j=i; j<seq2_length; j++)
         {
-        if(seq1[i+1] != seq2[j+1])
+        if(seq1[i] != seq2[j])
             {
             temp_max_val = 0;
 
@@ -54,102 +54,6 @@ for(i=0; i<seq1_length; i++)
                 {
                 temp_max_val = scoring_matrix[i+1][j];
                 }
-
-            else if(scoring_matrix[i][j] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j];
-                }
-            
-            else if(scoring_matrix[i][j+1] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j+1];
-                }
-            scoring_matrix[i+1][j+1] = temp_max_val;
-            }
-        else
-            {
-            temp_max_val = 0;
-
-            if(scoring_matrix[i+1][j] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i+1][j];
-                }
-
-            else if(scoring_matrix[i][j] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j];
-                }
-            
-            else if(scoring_matrix[i][j+1] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j+1];
-                }
-
-            for(k=j; k<seq2_length; k++)
-                {
-                scoring_matrix[i+1][k+1] = temp_max_val+1;
-                }
-            j = seq2_length;
-            }
-        }
-//x axis fill
-        for(j=i; j<seq1_length; j++)
-        {
-        if(seq2[i+1] != seq1[j+1])
-            {
-            temp_max_val = 0;
-
-            if(scoring_matrix[j][i+1] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i+1][j];
-                }
-
-            else if(scoring_matrix[j][i] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j];
-                }
-            
-            else if(scoring_matrix[j+1][i] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j+1];
-                }
-            scoring_matrix[i+1][j+1] = temp_max_val;
-            }
-        else
-            {
-            temp_max_val = 0;
-
-            if(scoring_matrix[j][i+1] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i+1][j];
-                }
-
-            else if(scoring_matrix[j][i] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j];
-                }
-            
-            else if(scoring_matrix[j+1][i] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j+1];
-                }
-
-            for(k=j; k<seq1_length; k++)
-                {
-                scoring_matrix[k+1][i+1] = temp_max_val+1;
-                }
-            j = seq1_length;
-            }
-        }
-    }
-/*
-for(i=0; i<seq1_length; i++)
-    {
-    for(j=0; j<seq2_length; j++)
-        {
-        if(seq1[i] == seq2[j])
-            {   
-            temp_max_val = scoring_matrix[i+1][j];
 
             if(scoring_matrix[i][j] > temp_max_val)
                 {
@@ -160,34 +64,45 @@ for(i=0; i<seq1_length; i++)
                 {
                 temp_max_val = scoring_matrix[i][j+1];
                 }
-            scoring_matrix[i+1][j+1] = temp_max_val+1;
+            scoring_matrix[i+1][j+1] = temp_max_val;
             }
         else
-            {   
-            temp_max_val = scoring_matrix[i+1][j];
+            {
+            scoring_matrix[i+1][j+1] = scoring_matrix[i][j]+1;
+            }
+        }
+//x axis scorint matrix fill
+        for(j=i; j<seq1_length; j++)
+        {
+        if(seq2[j] != seq1[i])
+            {
+            temp_max_val = 0;
 
-            if(scoring_matrix[i][j] > temp_max_val)
+            if(scoring_matrix[j][i+1] > temp_max_val)
                 {
-                temp_max_val = scoring_matrix[i][j];
+                temp_max_val = scoring_matrix[j][i+1];
+                }
+
+            if(scoring_matrix[j][i] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[j][i];
                 }
             
-            else if(scoring_matrix[i][j+1] > temp_max_val)
+            if(scoring_matrix[j+1][i] > temp_max_val)
                 {
-                temp_max_val = scoring_matrix[i][j+1];
+                temp_max_val = scoring_matrix[j+1][i];
                 }
-            scoring_matrix[i+1][j+1] = temp_max_val;
+            scoring_matrix[j+1][i+1] = temp_max_val;
+            }
+        else
+            {
+            scoring_matrix[j+1][i+1] = scoring_matrix[j][i]+1;
             }
         }
     }
-*/
 
-for(i=0; i<seq1_length; i++)
-    {
-    printf(" %c", seq1[i]);
-    }
 for(i=0; i<=seq2_length; i++)
     {
-    
     for(j=0; j<=seq1_length; j++)
         {
         printf("%d ", scoring_matrix[j][i]);
@@ -205,108 +120,74 @@ j = seq2_length-1;
 
 char output_matrix[seq1_length*seq2_length][2];
 
-while( i+j>1)  
+while( i+j>=0)  
     {
 printf("i = %d\tj = %d\n\n", i, j );  
-    if(scoring_matrix[i][j] >= scoring_matrix[i][j+1] && scoring_matrix[i][j] >= scoring_matrix[i+1][j])
+    if(scoring_matrix[i][j] >= scoring_matrix[i][j+1] && scoring_matrix[i][j] >= scoring_matrix[i+1][j] && i > 0 && j > 0)
         {
         trackback = 1;
-        output_matrix[step_num+1][0] = seq1[i];
-        output_matrix[step_num+1][1] = seq2[j];
         }
     
-    else if(scoring_matrix[i+1][j] >= scoring_matrix[i][j] && scoring_matrix[i+1][j] >= scoring_matrix[i][j+1])
+    else if(scoring_matrix[i+1][j] >= scoring_matrix[i][j] && scoring_matrix[i+1][j] >= scoring_matrix[i][j+1] && j > 0)
         {
         trackback = 0;
-        output_matrix[step_num+1][0] = '-';
-        output_matrix[step_num+1][1] = seq2[j];
         }
 
-    else if(scoring_matrix[i][j+1] >= scoring_matrix[i][j] && scoring_matrix[i][j] >= scoring_matrix[i+1][j])
+    else if(scoring_matrix[i][j+1] >= scoring_matrix[i][j] && scoring_matrix[i][j] >= scoring_matrix[i+1][j] && i > 0)
         {
         trackback = 2;
-        output_matrix[step_num+1][0] = seq1[i];
-        output_matrix[step_num+1][1] = '-';
         }
-printf("max value = %d\n", temp_max_val);
+
 printf("trackback = %d\n\n", trackback);
+
     if(trackback == 0)
         {
         j--;
+        output_matrix[step_num][0] = '-';
+        output_matrix[step_num][1] = seq2[j];
         }
     else if(trackback == 1)
         {
         i--;
         j--;
+        output_matrix[step_num][0] = seq1[i];
+        output_matrix[step_num][1] = seq2[j];
         }   
     else if(trackback == 2)
         {
         i--;
+        output_matrix[step_num][0] = seq1[i];
+        output_matrix[step_num][1] = '-';
         } 
     
     step_num++;
+    }
+
+//Print output
+for(i=0; i<step_num; i++)
+    {
+    printf("%d%c", i, output_matrix[i][0]);
+    printf("%d%c", i, output_matrix[i][1]);   
     }
 /*
-while( i+j>0 )   
+printf("step number = %d\n\n", step_num);
+
+for(i=step_num-1; i>=0; i--)
     {
-printf("i = %d\tj = %d\n\n", i, j );
-temp_max_val = scoring_matrix[i][j];
-
-    if(scoring_matrix[i][j] >= temp_max_val)
-        {
-        temp_max_val = scoring_matrix[i+1][j+1];
-        trackback = 1;
-        output_matrix[step_num+1][0] = seq1[i];
-        output_matrix[step_num+1][1] = seq2[j];
-        }
-
-    if(scoring_matrix[i+1][j] > temp_max_val)
-        {
-        temp_max_val = scoring_matrix[i+1][j];
-        trackback = 0;
-        output_matrix[step_num+1][0] = '-';
-        output_matrix[step_num+1][1] = seq2[j];
-        }
-
-    if(scoring_matrix[i][j+1] > temp_max_val)
-        {
-        temp_max_val = scoring_matrix[i][j+1];
-        trackback = 2;
-        output_matrix[step_num+1][0] = seq1[i];
-        output_matrix[step_num+1][1] = '-';
-        }
-printf("max value = %d\n", temp_max_val);
-printf("trackback = %d\n\n", trackback);
-    if(trackback == 0)
-        {
-        j--;
-        }
-    else if(trackback == 1)
-        {
-        i--;
-        j--;
-        }   
-    else if(trackback == 2)
-        {
-        i--;
-        } 
-    
-    step_num++;
-    }
-*/
-//Print output
-
-printf("\n\n");
-
-for(i=step_num; i>=0; i--)
-    {
-    printf("%c", output_matrix[i][0]);
+    printf("%c ", output_matrix[i][0]);
     }
 
 printf("\n");
 
-for(i=step_num; i>=0; i--)
+for(i=step_num-1; i>=0; i--)
     {
-    printf("%c", output_matrix[i][1]);
+    printf("%c ", output_matrix[i][1]);
     }
+    */
+
+for(i=0; i<=seq1_length; i++)
+    {
+    free(scoring_matrix[i]);
+    }
+free(scoring_matrix);
 }
