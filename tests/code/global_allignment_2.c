@@ -5,13 +5,15 @@
 #include <ctype.h>
 
 #define seq_length 1000
+#define DEFAULT_PENALTY 1
 
 int main()
 {
-int i, j, k, l, m, seq1_length, seq2_length, temp_max_val, step_num=0;
+int i, j, k, l, m, seq1_length, seq2_length, temp_max_val, temp_seq_length, step_num=0, trackback;;
 int penalty;
 char seq1[seq_length];
 char seq2[seq_length];
+char temp_seq[seq_length];
 
 //Get sequences and caalculate their lengths to form scoring matrix
 
@@ -20,6 +22,18 @@ scanf("%s", &seq2);
 
 seq1_length = strlen(seq1);
 seq2_length = strlen(seq2);
+
+//Make sure that sequence 1 string has the biggest sequence
+
+if(seq2_length > seq1_length)
+    {
+    strcpy(temp_seq, seq2);
+    strcpy(seq2, seq1);
+    strcpy(seq1, temp_seq);
+    temp_seq_length = seq2_length;
+    seq2_length = seq1_length;
+    seq1_length = temp_seq_length;
+    }
 
 //Create the scoring matrix for the two sequences
 
@@ -43,79 +57,16 @@ for(i=1; i<=seq1_length; i++)
 
 //Calculate the scores
 
-penalty = 1; 
+penalty = DEFAULT_PENALTY; 
 
 for(i=0; i<seq1_length; i++)
     {
-//y axis scoring matrix fill
-    for(j=i; j<seq2_length; j++)
-        {
-        if(seq1[i] != seq2[j])
-            {
-            temp_max_val = 0;
-
-            if(scoring_matrix[i+1][j] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i+1][j];
-                }
-
-            if(scoring_matrix[i][j] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j];
-                }
-            
-            if(scoring_matrix[i][j+1] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j+1];
-                }
-            scoring_matrix[i+1][j+1] = temp_max_val - penalty;
-            }
-        else
-            {temp_max_val = 0;
-
-            if(scoring_matrix[i+1][j] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i+1][j];
-                }
-
-            if(scoring_matrix[i][j] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j];
-                }
-            
-            if(scoring_matrix[i][j+1] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[i][j+1];
-                }
-            scoring_matrix[i+1][j+1] = temp_max_val+1;
-            }
-        }
 //x axis scorint matrix fill
         for(j=i; j<seq1_length; j++)
         {
-        if(seq2[j] != seq1[i])
+        if(seq2[j] == seq1[i])
             {
-            temp_max_val = 0;
-
-            if(scoring_matrix[j][i+1] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[j][i+1];
-                }
-
-            if(scoring_matrix[j][i] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[j][i];
-                }
-            
-            if(scoring_matrix[j+1][i] > temp_max_val)
-                {
-                temp_max_val = scoring_matrix[j+1][i];
-                }
-            scoring_matrix[j+1][i+1] = temp_max_val - penalty;
-            }
-        else
-            {
-            temp_max_val = 0;
+            temp_max_val = -100;
 
             if(scoring_matrix[j][i+1] > temp_max_val)
                 {
@@ -133,6 +84,71 @@ for(i=0; i<seq1_length; i++)
                 }
             scoring_matrix[j+1][i+1] = temp_max_val+1;
             }
+        else
+            {
+            temp_max_val = -100;
+
+            if(scoring_matrix[j][i+1] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[j][i+1];
+                }
+
+            if(scoring_matrix[j][i] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[j][i];
+                }
+            
+            if(scoring_matrix[j+1][i] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[j+1][i];
+                }
+            scoring_matrix[j+1][i+1] = temp_max_val - penalty;
+            }
+        }
+
+//y axis scoring matrix fill
+    for(j=i; j<seq2_length; j++)
+        {
+        if(seq1[i] == seq2[j])
+            {
+            temp_max_val = -100;
+
+            if(scoring_matrix[i+1][j] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i+1][j];
+                }
+
+            if(scoring_matrix[i][j] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i][j];
+                }
+            
+            if(scoring_matrix[i][j+1] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i][j+1];
+                }
+            scoring_matrix[i+1][j+1] = temp_max_val+1;
+            }
+        else
+            {
+            temp_max_val = -100;
+
+            if(scoring_matrix[i+1][j] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i+1][j];
+                }
+
+            if(scoring_matrix[i][j] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i][j];
+                }
+            
+            if(scoring_matrix[i][j+1] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i][j+1];
+                }
+            scoring_matrix[i+1][j+1] = temp_max_val - penalty;
+            }
         }
     }
 
@@ -145,10 +161,7 @@ for(i=0; i<=seq2_length; i++)
     printf("\n");
     }
 
-
 //Trackack algorithm
-
-int trackback;
 
 i = seq1_length-1;
 j = seq2_length-1;
