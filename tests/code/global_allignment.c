@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <ctype.h>
 
 #define seq_length 1000
 
 int main()
 {
 int i, j, k, l, m, seq1_length, seq2_length, temp_max_val, step_num=0;
+int penalty;
 char seq1[seq_length];
 char seq2[seq_length];
 
@@ -41,6 +43,8 @@ for(i=1; i<=seq1_length; i++)
 
 //Calculate the scores
 
+penalty = 0; 
+
 for(i=0; i<seq1_length; i++)
     {
 //y axis scoring matrix fill
@@ -52,17 +56,17 @@ for(i=0; i<seq1_length; i++)
 
             if(scoring_matrix[i+1][j] > temp_max_val)
                 {
-                temp_max_val = scoring_matrix[i+1][j];
+                temp_max_val = scoring_matrix[i+1][j] - penalty;
                 }
 
             if(scoring_matrix[i][j] > temp_max_val)
                 {
-                temp_max_val = scoring_matrix[i][j];
+                temp_max_val = scoring_matrix[i][j] - penalty;
                 }
             
             if(scoring_matrix[i][j+1] > temp_max_val)
                 {
-                temp_max_val = scoring_matrix[i][j+1];
+                temp_max_val = scoring_matrix[i][j+1] - penalty;
                 }
             scoring_matrix[i+1][j+1] = temp_max_val;
             }
@@ -80,17 +84,17 @@ for(i=0; i<seq1_length; i++)
 
             if(scoring_matrix[j][i+1] > temp_max_val)
                 {
-                temp_max_val = scoring_matrix[j][i+1];
+                temp_max_val = scoring_matrix[j][i+1] - penalty;
                 }
 
             if(scoring_matrix[j][i] > temp_max_val)
                 {
-                temp_max_val = scoring_matrix[j][i];
+                temp_max_val = scoring_matrix[j][i] - penalty;
                 }
             
             if(scoring_matrix[j+1][i] > temp_max_val)
                 {
-                temp_max_val = scoring_matrix[j+1][i];
+                temp_max_val = scoring_matrix[j+1][i] - penalty;
                 }
             scoring_matrix[j+1][i+1] = temp_max_val;
             }
@@ -120,20 +124,20 @@ j = seq2_length-1;
 
 char output_matrix[seq1_length*seq2_length][2];
 
-while( i+j>=0)  
+while( i+j+1>=0)  
     {
 printf("i = %d\tj = %d\n\n", i, j );  
-    if(scoring_matrix[i][j] >= scoring_matrix[i][j+1] && scoring_matrix[i][j] >= scoring_matrix[i+1][j] && i > 0 && j > 0)
+    if(scoring_matrix[i][j] >= scoring_matrix[i][j+1] && scoring_matrix[i][j] >= scoring_matrix[i+1][j] && i+1 > 0 && j+1 > 0)
         {
         trackback = 1;
         }
     
-    else if(scoring_matrix[i+1][j] >= scoring_matrix[i][j] && scoring_matrix[i+1][j] >= scoring_matrix[i][j+1] && j > 0)
+    else if(scoring_matrix[i+1][j] >= scoring_matrix[i][j] && scoring_matrix[i+1][j] >= scoring_matrix[i][j+1] && j+1 > 0)
         {
         trackback = 0;
         }
 
-    else if(scoring_matrix[i][j+1] >= scoring_matrix[i][j] && scoring_matrix[i][j] >= scoring_matrix[i+1][j] && i > 0)
+    else if(scoring_matrix[i][j+1] >= scoring_matrix[i][j] && scoring_matrix[i][j+1] >= scoring_matrix[i+1][j] && i+1 > 0)
         {
         trackback = 2;
         }
@@ -142,35 +146,44 @@ printf("trackback = %d\n\n", trackback);
 
     if(trackback == 0)
         {
-        j--;
         output_matrix[step_num][0] = '-';
         output_matrix[step_num][1] = seq2[j];
+        j--;
         }
     else if(trackback == 1)
         {
-        i--;
-        j--;
         output_matrix[step_num][0] = seq1[i];
         output_matrix[step_num][1] = seq2[j];
+        i--;
+        j--;
         }   
     else if(trackback == 2)
         {
-        i--;
         output_matrix[step_num][0] = seq1[i];
         output_matrix[step_num][1] = '-';
+        i--;
         } 
     
     step_num++;
     }
 
 //Print output
-for(i=0; i<step_num; i++)
+
+for(i=step_num-1; i>=0; i--)
     {
-    printf("%d%c", i, output_matrix[i][0]);
-    printf("%d%c", i, output_matrix[i][1]);   
+    if(output_matrix[i][0] == 0)
+        {
+        output_matrix[i][0] = '-';
+        }
     }
-/*
-printf("step number = %d\n\n", step_num);
+
+for(i=step_num-1; i>=0; i--)
+    {
+    if(output_matrix[i][1] == 0)
+        {
+        output_matrix[i][1] = '-';
+        }
+    }
 
 for(i=step_num-1; i>=0; i--)
     {
@@ -183,11 +196,11 @@ for(i=step_num-1; i>=0; i--)
     {
     printf("%c ", output_matrix[i][1]);
     }
-    */
 
 for(i=0; i<=seq1_length; i++)
     {
     free(scoring_matrix[i]);
     }
 free(scoring_matrix);
+
 }
