@@ -33,17 +33,17 @@ for(i=0; i<=seq1_length; i++)
 
 for(i=0; i<=seq2_length; i++)
     {
-    scoring_matrix[0][i] = 0;
+    scoring_matrix[0][i] = -i;
     }
 
 for(i=1; i<=seq1_length; i++)
     {
-    scoring_matrix[i][0] = 0;
+    scoring_matrix[i][0] = -i;
     }
 
 //Calculate the scores
 
-penalty = 0; 
+penalty = 1; 
 
 for(i=0; i<seq1_length; i++)
     {
@@ -71,8 +71,23 @@ for(i=0; i<seq1_length; i++)
             scoring_matrix[i+1][j+1] = temp_max_val - penalty;
             }
         else
-            {
-            scoring_matrix[i+1][j+1] = scoring_matrix[i][j]+1;
+            {temp_max_val = 0;
+
+            if(scoring_matrix[i+1][j] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i+1][j];
+                }
+
+            if(scoring_matrix[i][j] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i][j];
+                }
+            
+            if(scoring_matrix[i][j+1] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[i][j+1];
+                }
+            scoring_matrix[i+1][j+1] = temp_max_val+1;
             }
         }
 //x axis scorint matrix fill
@@ -100,7 +115,23 @@ for(i=0; i<seq1_length; i++)
             }
         else
             {
-            scoring_matrix[j+1][i+1] = scoring_matrix[j][i]+1;
+            temp_max_val = 0;
+
+            if(scoring_matrix[j][i+1] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[j][i+1];
+                }
+
+            if(scoring_matrix[j][i] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[j][i];
+                }
+            
+            if(scoring_matrix[j+1][i] > temp_max_val)
+                {
+                temp_max_val = scoring_matrix[j+1][i];
+                }
+            scoring_matrix[j+1][i+1] = temp_max_val+1;
             }
         }
     }
