@@ -72,14 +72,14 @@ my @window_aa = split("",$prot_seq);
 
 $hydro_sum = 0;
 
-for($j = $0; $j < $WINDOW_SIZE; $j++)                  #j is used to calculate the hydropathy of the residues in the current window
+for($j = 0; $j < $WINDOW_SIZE; $j++)                  #j is used to calculate the hydropathy of the residues in the current window
         {
         $hydro_sum += $hydro{$window_aa [$j]};
         }
 
 for($i = 1; $i <= $seq_length - $WINDOW_SIZE; $i++)             #i is used to keep track of which window we are calculating
     {
-    $hydro_sum = $hydro_sum - $window_aa[$i-1] + $window_aa[$i+$WINDOW_SIZE];
+    $hydro_sum = $hydro_sum - $hydro{$window_aa [$i-1]} + $hydro{$window_aa [$i+$WINDOW_SIZE]};
 
     $hydro_mean = $hydro_sum/$WINDOW_SIZE;
 
