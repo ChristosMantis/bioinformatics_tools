@@ -1,2 +1,0 @@
-Transmembrane domain 1 Starts:6	 Ends: 16
-Transmembrane domain 2 Starts:738	 Ends: 764
