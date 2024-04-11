@@ -1,6 +1,7 @@
 #! user/bin/perl -w
 
 my $ARGC = @ARGV;
+my $ASCII_Offset = 33;
 my $i;
 my $scoring;
 my $sequence_length;
@@ -24,42 +25,45 @@ else                                                                            
     open(INPUT, '<', $input_file) || die "Coundn't open $input_file\n";
     }
 
-print"Give the minimum scoring for the sequences\n";
+print"Give the minimum Q scoring for the sequences\n";
 
 $min_score = <STDIN>;
 $sequence_length = 0;
 
 open($output_file, '>', "fastq_out.txt");                                          #Open output file and print results
+open($output_file_garbage, '>', "garbage_disposal.txt"); 
 
 while($temp = <INPUT>)
     {
     $header = $temp;
-    #print $header;
     chomp $header;
     $sequence = <INPUT>;
-    #print $sequence;
     chomp $sequence;
     $plus_sign = <INPUT>;
     $quality = <INPUT>;
-    #print $quality;
 
-    @quality_array = split(undef, $quality);
+    @quality_array = split(//, $quality);
 
     $sequence_length = @quality_array;
     $scoring = 0;
 
     for($i = 0; $i < $sequence_length; $i++)
         {
-        $scoring += ord($quality_array[$i])-33;
+        $scoring += ord($quality_array[$i])-$ASCII_Offset;
         }
 
     if($sequence_length != 0 && $scoring/$sequence_length >= $min_score)
         {
         print $output_file  $header, "\n", $sequence, "\n+\n", $quality;
         }
+    else    
+        {
+        print $output_file_garbage  $header, "\n", $sequence, "\n+\n", $quality;
+        }
     }
 
 close($output_file);
+close($output_file_garbage);
 
 
 
