@@ -41,6 +41,7 @@ while($temp = <INPUT>)
     chomp $sequence;
     $plus_sign = <INPUT>;
     $quality = <INPUT>;
+    chomp $quality;
 
     @quality_array = split(//, $quality);
 
