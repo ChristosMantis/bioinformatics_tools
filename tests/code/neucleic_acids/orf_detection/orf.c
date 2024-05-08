@@ -18,7 +18,7 @@ if( argc != 2 )
 	//Get the number of lines in the file
 
 FILE *fp;
-fp* = fopen(argv[1], "r");
+fp = fopen(argv[1], "r");
 
 char input;
 
