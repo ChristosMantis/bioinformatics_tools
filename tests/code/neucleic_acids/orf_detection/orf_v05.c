@@ -9,29 +9,23 @@ void read_fasta(const char *input_file, char *input_seq)
 	int sequence_flag = 0;
 	int i = 0;
 
-	//Open file and assign pointer
-
-	FILE *fp = fopen(input_file, "r");
+	FILE *fp = fopen(input_file, "r");								//Open file and assign pointer
 	if(fp == NULL)
 		{
 		printf("Input file is empty.\n");
 		exit(0);
 		}
 
-	//Get sequence from file, while avoiding 1st line in fasta file
-
-	while(fgets(temp_input, sizeof(temp_input), fp))
+	while(fgets(temp_input, sizeof(temp_input), fp))				//Get sequence from file, while avoiding 1st line in fasta file
 		{
 		if(temp_input[0] == '>')
 			{
 			sequence_flag = 1;
 			continue;
 			}
-		
-	//Copy input to input_seq in main function from the address passed in second arguement of read_fasta function
 
-		if(sequence_flag)
-			{
+		if(sequence_flag)											//Copy input to input_seq in main function from the address passed in 
+			{														//second arguement of read_fasta function
 			memcpy(input_seq, temp_input, sizeof(temp_input));
 			}
 		}
@@ -46,7 +40,7 @@ int orf_count = 0;
 
 for(i = frame; i < seq_length; i += 3)
 	{
-	if(input_seq[i] == 'A' && input_seq[i+1] == 'T' && input_seq[i+2] == 'G')
+	if(input_seq[i] == 'A' && input_seq[i+1] == 'T' && input_seq[i+2] == 'G')		//Check all codons in this frame and find all ATG codons
 		{
 		orf_start[orf_count] = i;
 		orf_count++;
@@ -60,10 +54,9 @@ int orf_end_detector(int orf_start, char* input_seq, int seq_length)
 int i;
 int orf_finish;	
 
-for(i=orf_start+3; i<seq_length; i+=3)
+for(i=orf_start+3; i<seq_length; i+=3)												//Find stop codon for given start codon and return its position
 	{
-	//Find stop codon and return its position
-	if(i >= seq_length)
+	if(i >= seq_length)																//Check if codon is not at the end of the sequence
 		{
 		printf("No orf was found\n");
 		exit(1);
@@ -88,12 +81,37 @@ for(i=orf_start+3; i<seq_length; i+=3)
 return(orf_finish);
 }
 
-void remove_nested_orf()
-{}
+void remove_nested_orf(int frame, int *orf_start, int *orf_finish, int *orf_count)
+{
+int i, j;
+
+for(i = 0; i < orf_count[frame]; i++)
+	{
+	if(orf_start[i+1] < orf_finish[i] && i < orf_count[frame]-1)		//Checks if x orf starts before x-1 orf finishes 
+		{
+		if(i = orf_count[frame]-1)										//If its the last orf, remove it and break
+			{
+			orf_start[i+1] = 0;
+			orf_finish[i+1] = 0;
+			orf_count[frame]--;
+			break;
+			}
+		for(j = i; j < orf_count[frame]; j++)							//Move all following orfs one step behind
+			{
+			orf_start[j+1] = orf_start[j+2];
+			orf_finish[j+1] = orf_finish[j+2];
+			}
+		i--;
+		orf_count[frame]--;
+		}
+	}
+}
 
 void print_results(char *input_seq, int *orf_start, int *orf_finish, int *orf_count, int frame)
 {
 int i;
+
+//Print all ORFs in the reading frame
 
 for(i = 0; i < orf_count[0]; i++)
 	{
@@ -114,17 +132,13 @@ int orf_start[3][100];								//In orf_start[0][x] contains the aa for reading f
 int orf_finish[3][100];								//orf_start[1][x] for reading frame +3. 
 char input_seq[1000];
 
-	//Exit program if there is no input file
-
-if( argc != 2 )
+if( argc != 2 )										//Exit program if there is no input file	
 		{
         printf("Wrong input\n\n");
 	    exit(1);
 		}
 
-	//Get sequence and the number of neucleic acids from the file
-
-read_fasta(input_file, &input_seq[0]);
+read_fasta(input_file, &input_seq[0]);				//Get sequence and the number of neucleic acids from the file
 
 seq_length = strlen(input_seq);
 
@@ -133,11 +147,9 @@ orf_count[0] = 0;
 orf_count[1] = 0;
 orf_count[2] = 0;
 
-//Find all the start codons and the frame they are in
-
-for(i = 0; i < 3; i++)
+for(i = 0; i < 3; i++)																
 	{
-	orf_count[i] = orf_start_detector(i, &input_seq[0], seq_length, &orf_start[i][0]);
+	orf_count[i] = orf_start_detector(i, &input_seq[0], seq_length, &orf_start[i][0]);			//Find all the start codons and the frame they are in
 	}
 
 for(j = 0; j < 3; j++)
@@ -147,13 +159,16 @@ for(j = 0; j < 3; j++)
 		orf_finish[j][i] = orf_end_detector(orf_start[j][i], &input_seq[0], seq_length);
 		}
 	}
+for(i = 0; i < 3; i++)
+	{
+	remove_nested_orf(i, &orf_start[i][0], &orf_finish[i][0], &orf_count[i]);
+	}
 
-//Print results of there are any
 for(i = 0; i < 3; i++)
 	{
 	if(orf_finish[i][0] != 0)
 		{
-		print_results(&input_seq[0], &orf_start[i][0], &orf_finish[i][0], &orf_count[i], i);
+		print_results(&input_seq[0], &orf_start[i][0], &orf_finish[i][0], &orf_count[i], i);	//Print results of there are any
 		}
 	}
 }

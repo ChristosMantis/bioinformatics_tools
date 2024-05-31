@@ -132,7 +132,7 @@ if(orf_finish[0] != 0)
 	{
 	for(i = 0; i < orf_count; i++)
 		{
-		printf("\nORF detected, start codon from:%d stop codon from: %d, in frame +%d\n\n", orf_start[0][i], orf_finish[i], orf_start[1][i]);
+		printf("\nORF detected, start codon from:%d stop codon from: %d, in frame +%d\n\n", orf_start[0][i]+1, orf_finish[i]+1, orf_start[1][i]);
 		}
 	}
 else
