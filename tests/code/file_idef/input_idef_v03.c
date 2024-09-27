@@ -9,6 +9,7 @@ int main( int argc, char *argv[] )
 {
 int i, j, k, m, flag_count = 0;
 
+/*
 for(i = 1; i < argc; i++)
     {
 	if ( strcmp( argv[i], "-") == 1 )
@@ -16,28 +17,30 @@ for(i = 1; i < argc; i++)
         flag_count++;
         }
     }
+*/
+//printf("%d\n", argc);
+//printf("%d\n", flag_count);
 
-if(flag_count > 0)
+for(i = 1; i < argc; i++)
     {
-    for(i = 1; i < argc; i++)
+    if(strcmp(argv[i], "--help") == 0)
         {
-        if(strcmp(argv[i], "-help") == 0)
-            {
-            printf("-help: Shows all modifiers\n-c: counts all the flags that were used as input in the program\n-v: Verboses the proceedure\n");
-            exit(0);
-            }
-        else if(strcmp(argv[i],"-c") == 0)
-            {
-            COUNT_FLAG = 1;
-            }
-        else if(strcmp(argv[i],"-v") == 0)
-            {
-            VERBOSE_FLAG = 1;
-            }
-        else
-            {
-            continue;
-            }
+        printf("--help: Shows all modifiers\n-c: counts all the flags that were used as input in the program\n-v: Verboses the proceedure\n");
+        exit(0);
+        }
+    else if(strcmp(argv[i],"-c") == 0 && COUNT_FLAG == 0)
+        {
+        COUNT_FLAG = 1;
+        flag_count++;
+        }
+    else if(strcmp(argv[i],"-v") == 0 && VERBOSE_FLAG == 0)
+        {
+        VERBOSE_FLAG = 1;
+        flag_count++;
+        }
+    else
+        {
+        continue;
         }
     }
 
