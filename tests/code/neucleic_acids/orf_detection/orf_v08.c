@@ -1,3 +1,6 @@
+//In version 08, malloc was added to make the program more resourceful and make it crash more often from bad code, good luck in future endevours
+//This is already a nightmare, check line ~122 to see what the problem is
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -23,7 +26,9 @@ int orf_frame;
 int seq_length;
 int orf_start[3][100];								//In orf_start[0][x] contains the aa for reading frame +1, orf_start[1][x] for reading frame +2 and 
 int orf_finish[3][100];								//orf_start[1][x] for reading frame +3. 
-char input_seq[1000];
+char *input_seq;
+
+input_seq = (char*) malloc(256*2);
 
 if( argc != 2 )										//Exit program if there is no input file	
 		{
@@ -87,37 +92,39 @@ for(i = 0; i < 3; i++)
 		print_results(&input_seq[0], &orf_start[i][0], &orf_finish[i][0], &orf_count[i], i);	//Print results of there are any
 		}
 	}
+
+free(input_seq);
 }
 
 void read_fasta(const char *input_file, char *input_seq)
+{
+char temp_input[256];
+int sequence_flag = 0;
+int i = 0;	
+int mem_blocks = 1;
+FILE *fp = fopen(input_file, "r");								//Open file and assign pointer
+
+if(fp == NULL)
 	{
-	char temp_input[256];
-	int sequence_flag = 0;
-	int i = 0;
-
-	FILE *fp = fopen(input_file, "r");								//Open file and assign pointer
-	if(fp == NULL)
-		{
-		printf("Input file is empty.\n");
-		exit(0);
-		}
-
-	while(fgets(temp_input, sizeof(temp_input), fp))				//Get sequence from file, while avoiding 1st line in fasta file
-		{
-		if(temp_input[0] == '>')
-			{
-			sequence_flag = 1;
-			continue;
-			}
-
-		if(sequence_flag)											//Copy input to input_seq in main function from the address passed in 
-			{														//second arguement of read_fasta function
-			memcpy(input_seq, temp_input, sizeof(temp_input));
-			}
-		}
-
-	fclose(fp);
+	printf("Input file is empty.\n");
+	exit(0);
 	}
+while(fgets(temp_input, sizeof(temp_input), fp))				//Get sequence from file, while avoiding 1st line in fasta file
+	{
+	if(temp_input[0] == '>')
+		{
+		sequence_flag = 1;
+		continue;
+		}
+	if(sequence_flag)											//Copy input to input_seq in main function from the address passed in 
+		{														//second arguement of read_fasta function
+		mem_blocks++;
+		input_seq = (char*) realloc(input_seq, mem_blocks*sizeof(temp_input));			//This thing doesnt work as intended
+		memcpy(input_seq, temp_input, sizeof(temp_input));
+		}
+	}
+fclose(fp);
+}
 
 int orf_start_detector(int frame, char* input_seq, int seq_length, int* orf_start)
 {
