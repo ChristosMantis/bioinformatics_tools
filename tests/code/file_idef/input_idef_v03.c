@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+//The purpose of this code is to identify the input format of the file and the flags that are given as input while running the code  
+
 int COUNT_FLAG = 0;
 int VERBOSE_FLAG = 0;
 
@@ -10,16 +12,20 @@ int main( int argc, char *argv[] )
 int i, j, k, m, flag_count = 0;
 
 /*
+char temp[20];
 for(i = 1; i < argc; i++)
     {
-	if ( strcmp( argv[i], "-") == 1 )
+    //strcpy(temp, argv[i]);
+	if ( strcmp(argv[i], "-") == 1 )
         {
         flag_count++;
         }
     }
-*/
+
 //printf("%d\n", argc);
-//printf("%d\n", flag_count);
+//printf("%s\n", argv[1]);
+printf("%d\n", flag_count);
+*/
 
 for(i = 1; i < argc; i++)
     {
