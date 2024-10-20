@@ -5,8 +5,6 @@ Why are we doing this?
 We simply were bored.
  
  
-What programming language are we using and why?
-
-
-What is the name of the program and why?
+What programming language are we using?
+C, PERL and maybe some python for the moment
 
