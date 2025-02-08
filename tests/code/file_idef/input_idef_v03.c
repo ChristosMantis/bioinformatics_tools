@@ -6,11 +6,12 @@
 
 int COUNT_FLAG = 0;
 int VERBOSE_FLAG = 0;
+int INPUT_FLAG = 0;
 
 int main( int argc, char *argv[] )
 {
 int i, j, k, m, flag_count = 0;
-
+char input_file_name[20];
 /*
 char temp[20];
 for(i = 1; i < argc; i++)
@@ -44,17 +45,31 @@ for(i = 1; i < argc; i++)
         VERBOSE_FLAG = 1;
         flag_count++;
         }
+    else if(strcmp(argv[i],"-i") == 0 && VERBOSE_FLAG == 0)
+        {
+        INPUT_FLAG =1;
+        if(i < argc-1)
+            {
+            strcpy(input_file_name, argv[i+1]);
+            i++;
+            }
+        }
+/*
     else
         {
         continue;
-        }
+       } 
+*/
     }
 
 if(COUNT_FLAG == 1 )
     {
     printf("We count %d flags as input\n", flag_count);
     }
-
+    if(INPUT_FLAG == 1 )
+    {
+    printf("%s\n", input_file_name);
+    }
 }
 
 
