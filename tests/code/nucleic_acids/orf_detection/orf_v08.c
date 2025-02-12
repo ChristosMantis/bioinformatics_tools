@@ -82,7 +82,7 @@ for(j = 0; j < 3; j++)
 	}
 for(i = 0; i < 3; i++)
 	{
-	remove_nested_orf(i, &orf_start[i][0], &orf_finish[i][0], &orf_count[i]);
+	remove_nested_orf(i, &orf_start[i][0], &orf_finish[i][0], &orf_count[0]);
 	}
 
 for(i = 0; i < 3; i++)
@@ -152,7 +152,7 @@ for(i=orf_start+3; i<seq_length; i+=3)												//Find stop codon for given st
 	if(i >= seq_length)																//Check if codon is not at the end of the sequence
 		{
 		printf("No orf was found\n");
-		exit(1);
+		//exit(1);
 		}
 	else if(input_seq[i] == 'T' && input_seq[i+1] == 'G' && input_seq[i+2] == 'A')
 		{
@@ -174,26 +174,28 @@ for(i=orf_start+3; i<seq_length; i+=3)												//Find stop codon for given st
 return(orf_finish);
 }
 
-void remove_nested_orf(int frame, int *orf_start, int *orf_finish, int *orf_count)
+void remove_nested_orf(int frame, int *orf_start, int *orf_finish, int *orf_count)	
 {
 int i, j;
 
-for(i = 0; i < orf_count[frame]-1; i++)
+for(i = 0; i < orf_count[frame]; i++)
 	{
 	if(orf_start[i+1] < orf_finish[i] && i < orf_count[frame]-1)		//Checks if x orf starts before x-1 orf finishes 
 		{
-		if(i = orf_count[frame]-1)										//If its the last orf, remove it and break
+		if(i == orf_count[frame])										//If its the last orf, remove it and break
 			{
 			orf_start[i+1] = 0;
 			orf_finish[i+1] = 0;
 			orf_count[frame]--;
 			break;
 			}
-		for(j = i; j < orf_count[frame]; j++)							//Move all following orfs one step behind
+		for(j = i+1; j < orf_count[frame]; j++)							//Move all following orfs one step behind
 			{
-			orf_start[j+1] = orf_start[j+2];
-			orf_finish[j+1] = orf_finish[j+2];
+			orf_start[j] = orf_start[j+1];
+			orf_finish[j] = orf_finish[j+1];
 			}
+		orf_start[j-1] = 0;
+		orf_finish[j-1] = 0;
 		i--;
 		orf_count[frame]--;
 		}
@@ -208,7 +210,7 @@ int i;
 
 for(i = 0; i < orf_count[0]; i++)
 	{
-	printf("\nORF detected, start codon from:%d stop codon from: %d, in frame +%d\n\n", orf_start[i]+1, orf_finish[i]+1, frame+1);
+	printf("\nORF detected, start codon on:%d stop codon on: %d, in frame +%d\n\n", orf_start[i]+1, orf_finish[i]+1, frame+1);
 	}
 	
 }
